@@ -1,6 +1,6 @@
 {
   "name": "express-typescript-template",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "https://github.com/dillondrenzek/express-typescript-template.git",
   "author": "Dillon Drenzek <dillon@drenzek.com>",
   "license": "MIT",
