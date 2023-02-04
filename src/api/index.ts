@@ -1,26 +1,18 @@
 import express from 'express';
 import { TodoistApi } from '@doist/todoist-api-typescript';
-import { getBearerToken } from '../lib/auth';
-import { HttpStatusCode } from '../lib/http';
 import { TodoistSyncApi } from '../lib/todoist-sync-api';
 import { SnapshotController } from '../controllers/snapshot-controller';
+import { todoistAccessToken } from '../middleware/todoist-access-token';
 
 export default function apiController() {
   const api = express();
 
-  api.get('/filter-snapshots', async (req, res, next) => {
-    const accessToken = getBearerToken(req);
+  // Gate authentication
+  api.use(todoistAccessToken());
 
-    if (!accessToken) {
-      res.status(HttpStatusCode.Unauthorized).json({
-        status: HttpStatusCode.Unauthorized,
-        code: 'UNAUTHORIZED',
-      });
-      next();
-      return;
-    }
-
+  api.get('/filter-snapshots', async (req, res) => {
     try {
+      const accessToken = req.todoist_access_token;
       const controller = new SnapshotController(
         new TodoistApi(accessToken),
         new TodoistSyncApi(accessToken)
@@ -36,24 +28,13 @@ export default function apiController() {
     }
   });
 
-  api.get('/tasks', async (req, res, next) => {
-    const accessToken = getBearerToken(req);
-
-    if (!accessToken) {
-      res.status(HttpStatusCode.Unauthorized).json({
-        status: HttpStatusCode.Unauthorized,
-        code: 'UNAUTHORIZED',
-      });
-      next();
-      return;
-    }
-
+  api.get('/tasks', async (req, res) => {
     try {
+      const accessToken = req.todoist_access_token;
       const api = new TodoistApi(accessToken);
       const tasks = await api.getTasks();
       res.json(tasks);
     } catch (error) {
-      console.error('Error get tasks', error);
       if (error['httpStatusCode'] && error['responseData']) {
         res.status(error['httpStatusCode']).json({
           status: error['httpStatusCode'],

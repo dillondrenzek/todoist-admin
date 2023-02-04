@@ -1,6 +1,6 @@
 import express from 'express';
 import loadEnv from './env';
-import { logRequests } from './lib/logging';
+import { logRequests } from './middleware/logging';
 import apiController from './api';
 
 const env = loadEnv();
