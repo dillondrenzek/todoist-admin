@@ -11,7 +11,7 @@ const port = env.APP_PORT; // default port to listen
 // Logger
 app.use(logRequests);
 
-app.use('/api', apiController);
+app.use('/api', apiController());
 
 // start the Express server
 app.listen(port, () => {
