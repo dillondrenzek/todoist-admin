@@ -3,11 +3,12 @@ import { TodoistApi } from '@doist/todoist-api-typescript';
 import { getBearerToken } from '../lib/auth';
 import { HttpStatusCode } from '../lib/http';
 import { TodoistSyncApi } from '../lib/todoist-sync-api';
+import { SnapshotController } from '../controllers/snapshot-controller';
 
 export default function apiController() {
   const api = express();
 
-  api.get('/filter-counts', async (req, res, next) => {
+  api.get('/filter-snapshots', async (req, res, next) => {
     const accessToken = getBearerToken(req);
 
     if (!accessToken) {
@@ -20,17 +21,11 @@ export default function apiController() {
     }
 
     try {
-      const syncApi = new TodoistSyncApi(accessToken);
-
-      const syncResponse = await syncApi.sync();
-
-      const response = syncResponse.filters.map((filter) => {
-        return {
-          name: filter.name,
-          query: filter.query,
-          count: 0,
-        };
-      });
+      const controller = new SnapshotController(
+        new TodoistApi(accessToken),
+        new TodoistSyncApi(accessToken)
+      );
+      const response = await controller.getFilterSnapshot();
 
       res.status(200).send(response);
       return;
