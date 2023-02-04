@@ -1,5 +1,5 @@
 import express from 'express';
-import { UnauthorizedError } from '../lib/error';
+import { UnauthorizedError } from '../lib/app-error';
 
 declare module 'express-serve-static-core' {
   interface Request {

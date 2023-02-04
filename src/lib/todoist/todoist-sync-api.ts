@@ -17,6 +17,25 @@ interface Filter {
   is_favorite: boolean;
 }
 
+type SyncResourceTypes =
+  | 'filters'
+  | 'labels'
+  | 'projects'
+  | 'items'
+  | 'notes'
+  | 'sections'
+  | 'filters'
+  | 'reminders'
+  | 'locations'
+  | 'user'
+  | 'live_notifications'
+  | 'collaborators'
+  | 'user_settings'
+  | 'notification_settings'
+  | 'user_plan_limits'
+  | 'completed_info'
+  | 'stat';
+
 interface SyncResponse {
   //   sync_token	A new synchronization token. Used by the client in the next sync request to perform an incremental sync.
   // full_sync	Whether the response contains all data (a full synchronization) or just the incremental updates since the last sync.
@@ -76,11 +95,11 @@ export class TodoistSyncApi {
 
   constructor(private accessToken: string) {}
 
-  async sync(): Promise<SyncResponse> {
+  async sync(resourceTypes: SyncResourceTypes[]): Promise<SyncResponse> {
     const { data } = await axios.post<SyncResponse>(
       this.url('/sync'),
       {
-        resource_types: ['filters'],
+        resource_types: resourceTypes,
       },
       {
         headers: {

@@ -1,12 +1,13 @@
 import express from 'express';
 import { TodoistApi } from '@doist/todoist-api-typescript';
-import { TodoistSyncApi } from '../lib/todoist-sync-api';
+import { TodoistSyncApi } from '../lib/todoist/todoist-sync-api';
 import { SnapshotController } from '../controllers/snapshot-controller';
 import { todoistAccessToken } from '../middleware/todoist-access-token';
 import axios, { HttpStatusCode, isAxiosError } from 'axios';
-import { AppError, ErrorCode } from '../lib/error';
+import { AppError, ErrorCode } from '../lib/app-error';
+import { isTodoistApiError } from '../lib/todoist/error';
 
-interface TodoistApiError {
+export interface TodoistApiError {
   // status: error['httpStatusCode'];
   // // message: error['responseData'],
   httpStatusCode: number;
@@ -52,15 +53,6 @@ function getHttpStatusForAppError(err: AppError): HttpStatusCode {
         return HttpStatusCode.InternalServerError;
     }
   }
-}
-
-function isTodoistApiError(value: unknown): value is TodoistApiError {
-  return (
-    value &&
-    typeof value === 'object' &&
-    'httpStatusCode' in value &&
-    'responseData' in value
-  );
 }
 
 function parseAppError(err: unknown): AppError {

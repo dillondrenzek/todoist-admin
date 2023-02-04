@@ -1,6 +1,6 @@
 import { TodoistApi } from '@doist/todoist-api-typescript';
 import { v4 as uuidV4 } from 'uuid';
-import { TodoistSyncApi } from '../lib/todoist-sync-api';
+import { TodoistSyncApi } from '../lib/todoist/todoist-sync-api';
 
 interface FilterSnapshot {
   /**
@@ -71,7 +71,7 @@ export class SnapshotController {
   }
 
   private async getUsersFilters() {
-    const syncResponse = await this.syncApi.sync();
+    const syncResponse = await this.syncApi.sync(['filters']);
 
     if (syncResponse?.full_sync) {
       return syncResponse.filters.map((filter) => {
