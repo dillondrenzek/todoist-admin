@@ -77,24 +77,19 @@ export class TodoistSyncApi {
   constructor(private accessToken: string) {}
 
   async sync(): Promise<SyncResponse> {
-    try {
-      const { data } = await axios.post<SyncResponse>(
-        this.url('/sync'),
-        {
-          resource_types: ['filters'],
+    const { data } = await axios.post<SyncResponse>(
+      this.url('/sync'),
+      {
+        resource_types: ['filters'],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      );
+      }
+    );
 
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-    return;
+    return data;
   }
 
   private url(path: string): string {

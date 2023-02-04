@@ -1,6 +1,5 @@
 import express from 'express';
-import { ErrorCode } from '../lib/error';
-import { HttpStatusCode } from '../lib/http';
+import { UnauthorizedError } from '../lib/error';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -27,17 +26,13 @@ function getBearerToken(req: express.Request) {
  *
  * Responds with `UNAUTHORIZED` error if it doesn't exist
  */
-export function todoistAccessToken(): express.RequestHandler {
-  return function (req, res, next) {
-    req.todoist_access_token = getBearerToken(req);
+export const todoistAccessToken: express.RequestHandler = (req, res, next) => {
+  const accessToken = getBearerToken(req);
 
-    if (!req.todoist_access_token) {
-      res.status(HttpStatusCode.Unauthorized).json({
-        status: HttpStatusCode.Unauthorized,
-        code: ErrorCode.Unauthorized,
-      });
-      return;
-    }
+  if (!accessToken) {
+    next(new UnauthorizedError());
+  } else {
+    req.todoist_access_token = accessToken;
     next();
-  };
-}
+  }
+};

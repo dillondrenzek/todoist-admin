@@ -40,7 +40,10 @@ export class SnapshotController {
     private syncApi: TodoistSyncApi
   ) {}
 
-  async getFilterSnapshot(): Promise<FilterSnapshot[]> {
+  /**
+   * Get snapshots for the User's filters
+   */
+  async getFilterSnapshots(): Promise<FilterSnapshot[]> {
     const userFilters = await this.getUsersFilters();
 
     const filtersTasks = await Promise.all(
@@ -68,34 +71,25 @@ export class SnapshotController {
   }
 
   private async getUsersFilters() {
-    try {
-      const syncResponse = await this.syncApi.sync();
+    const syncResponse = await this.syncApi.sync();
 
-      if (syncResponse.full_sync) {
-        return syncResponse.filters.map((filter) => {
-          return {
-            id: filter.id,
-            name: filter.name,
-            query: filter.query,
-          };
-        });
-      } else {
-        console.error('Not a full sync');
-      }
-    } catch (error) {
-      console.error('Error getUsersFilters', error);
+    if (syncResponse?.full_sync) {
+      return syncResponse.filters.map((filter) => {
+        return {
+          id: filter.id,
+          name: filter.name,
+          query: filter.query,
+        };
+      });
+    } else {
+      console.error('Not a full sync');
     }
 
     return [];
   }
 
   private async getTasksWithQuery(query: string) {
-    try {
-      const response = await this.todoistApi.getTasks({ filter: query });
-      return response;
-    } catch (error) {
-      console.error('Error getTasksWithQuery', error);
-      return null;
-    }
+    const response = await this.todoistApi.getTasks({ filter: query });
+    return response;
   }
 }
