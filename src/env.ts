@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 
 export interface AppEnvironment {
   APP_PORT: number;
+  DEBUG: boolean;
 }
 
 export default function (): AppEnvironment {
@@ -14,5 +15,6 @@ export default function (): AppEnvironment {
 
   return {
     APP_PORT: parseInt(parsed.APP_PORT, 10),
+    DEBUG: !!parsed.DEBUG,
   };
 }
