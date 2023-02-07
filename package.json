@@ -1,7 +1,7 @@
 {
-  "name": "express-typescript-template",
+  "name": "todoist-admin",
   "version": "0.0.2",
-  "repository": "https://github.com/dillondrenzek/express-typescript-template.git",
+  "repository": "https://github.com/dillondrenzek/todoist-admin.git",
   "author": "Dillon Drenzek <dillon@drenzek.com>",
   "license": "MIT",
   "main": "index.js",
