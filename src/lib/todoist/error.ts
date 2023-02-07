@@ -1,4 +1,7 @@
-import { TodoistApiError } from '../../api/index';
+export interface TodoistApiError {
+  httpStatusCode: number;
+  responseData: unknown;
+}
 
 /**
  * Type guard for if a value is an error from Todoist API
