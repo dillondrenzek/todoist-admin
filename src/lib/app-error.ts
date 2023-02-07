@@ -15,6 +15,9 @@ const errorMessages: Record<ErrorCode, string> = {
   [ErrorCode.Unknown]: 'Something went wrong',
 };
 
+/**
+ * Base error for the whole app
+ */
 export class AppError extends Error {
   constructor(public errorCode: ErrorCode) {
     super(errorMessages[errorCode]);

@@ -60,6 +60,7 @@ function parseAppError(err: unknown): AppError {
     return err;
   }
 
+  // Axios
   if (isAxiosError(err)) {
     console.error('Axios error', err.toJSON());
 
@@ -67,11 +68,14 @@ function parseAppError(err: unknown): AppError {
       return new AppError(ErrorCode.BadRequest);
     }
 
-    return new AppError(ErrorCode.Unknown);
+    // TODO
+    console.error('Unhandled Axios Error', err);
   }
 
+  // Todoist API
   if (isTodoistApiError(err)) {
-    console.error('Todoist Error', err);
+    // TODO
+    console.error('Unhandled Todoist Error', err);
   }
 
   return new AppError(ErrorCode.Unknown);
@@ -81,11 +85,11 @@ const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
   if (err) {
     const error = parseAppError(err);
     const httpStatus = getHttpStatusForAppError(error);
-    const apiError: ApiError = getApiErrorFromAppError(err);
+    const response: ApiError = getApiErrorFromAppError(err);
 
     console.error('Error handler', error);
 
-    res.status(httpStatus).json(apiError);
+    res.status(httpStatus).json(response);
   }
 
   next();
